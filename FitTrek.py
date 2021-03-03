@@ -23,6 +23,13 @@ def contact():
 def post():
     return render_template('post.html')
 
+@app.route("/signin")
+def login():
+    return render_template('signin.html')
+
+@app.route("/signup")
+def signup():
+    return render_template('signup.html')
 
 
 if __name__ == "__main__":
