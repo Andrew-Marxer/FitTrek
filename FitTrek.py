@@ -55,6 +55,10 @@ def contact():
 def post():
     return render_template('post.html')
 
+@app.route("/tracker")
+def tracker():
+    return render_template("tracker.html")
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
