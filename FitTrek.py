@@ -4,6 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user
+from nutritionix import Nutritionix
+
+nix = Nutritionix(app_id = 10908293,api_key = "65ec9bee4c82e455f41d19c810f88f89")
+
 
 app = Flask(__name__)
 
@@ -65,7 +69,19 @@ def post():
 
 @app.route("/tracker")
 def tracker():
-    return render_template("tracker.html")
+
+        query = nix.search().nxql(
+        filters={
+            "nf_calories":{
+                "lte": 500
+            }
+        },
+        fields = ["item_name","item_id","nf_calories"]
+).json()
+        
+        #print (query["item_name"])
+        return render_template("tracker.html",query = query)
+
 
 
 @app.route('/signup', methods=['GET', 'POST'])
