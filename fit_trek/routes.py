@@ -3,7 +3,7 @@ from fit_trek import app, db, bcrypt
 from fit_trek.forms import SignInForm, SignUpForm
 from fit_trek.database import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
-
+from fit_trek import nix
 
 @app.shell_context_processor
 def make_shell_context():
@@ -33,6 +33,21 @@ def contact():
 @app.route("/post")
 def post():
     return render_template('post.html')
+
+
+@app.route("/tracker")
+def tracker():
+        query = nix.search().nxql(
+        filters={
+            "nf_calories":{
+                "lte": 500
+            }
+        },
+        fields = ["item_name","item_id","nf_calories"]
+).json()
+        
+        #print (query["item_name"])
+        return render_template("tracker.html",query = query)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
