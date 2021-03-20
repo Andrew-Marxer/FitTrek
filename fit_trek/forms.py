@@ -26,4 +26,4 @@ class SignInForm(FlaskForm):
 
 class itemForm(FlaskForm):
     item = StringField("Food Item",validators = [DataRequired()])
-    submit = SubmitField("Search")
+    submit = SubmitField('Search')
