@@ -1,9 +1,10 @@
 from flask import redirect, url_for, render_template, flash, request
 from fit_trek import app, db, bcrypt
-from fit_trek.forms import SignInForm, SignUpForm
+from fit_trek.forms import SignInForm, SignUpForm, itemForm
 from fit_trek.database import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 from fit_trek import nix
+import json
 
 @app.shell_context_processor
 def make_shell_context():
@@ -35,20 +36,27 @@ def post():
     return render_template('post.html')
 
 
-@app.route("/tracker")
+@app.route("/tracker",methods = ["GET", "POST"])
 def tracker():
-        query = nix.search().nxql(
-        filters={
-            "nf_calories":{
-                "lte": 500
-            }
-        },
-        fields = ["item_name","item_id","nf_calories"]
-).json()
-        
-        #print (query["item_name"])
-        return render_template("tracker.html",query = query)
-
+       # query = nix.search().nxql(
+        #filters={
+         #   "nf_calories":{
+          #      "lte": 500
+           # }
+        #},
+        #fields = ["item_name","item_id","nf_calories"]
+        #).json()
+        form = itemForm()
+        if form.validate_on_submit():
+            searchItem = form.item.data
+            query = nix.search(searchItem, results="0:1").json()
+            objId = query['hits'][0]['_id']
+            info = nix.item(id=objId).json()
+            
+            filterInfo = "Name: " +str(info['item_name']) + "\ncalories: " + str(info['nf_calories']) + "\ncalories from fat: " + str(info['nf_calories_from_fat']) + "\ntotal fat(grams): " + str(info["nf_total_fat"]) + "\nsaturated fat(grams): " + str(info['nf_saturated_fat']) + "\nserving size(grams): " + str(info['nf_serving_weight_grams'])
+            filterInfo = filterInfo.split('\n')
+            return render_template("tracker.html", form = form, query = filterInfo)
+        return render_template("tracker.html", form = form, query = "")
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
