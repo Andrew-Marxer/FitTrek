@@ -22,3 +22,8 @@ class SignInForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign In')
+
+
+class itemForm(FlaskForm):
+    item = StringField("Food Item",validators = [DataRequired()])
+    submit = SubmitField('Search')
