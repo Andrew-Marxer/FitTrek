@@ -1,4 +1,4 @@
-from wtforms import StringField, PasswordField, SubmitField, Form, validators, BooleanField
+from wtforms import StringField, DecimalField, PasswordField, SubmitField, Form, validators, BooleanField
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from fitness.database import User, Post
@@ -30,3 +30,8 @@ class SignInForm(FlaskForm):
 class itemForm(FlaskForm):
     item = StringField("Food Item",validators = [DataRequired()])
     submit = SubmitField('Search')
+
+class calorieForm(FlaskForm):
+    consumed = DecimalField("Calories consumed", validators = [])
+    burned = DecimalField("Calories burned", validators = [])
+    submit = SubmitField("Submit")

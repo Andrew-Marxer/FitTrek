@@ -17,6 +17,9 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     post_attribute = db.relationship('Post', backref='author', lazy=True)
 
+    consumed = db.Column(db.Integer, nullable = True)
+    burned = db.Column(db.Integer, nullable = True)
+    calories = db.Column(db.Integer, nullable = True)
     def __repr__(self):
         return f"User('{self.fname}', '{self.lname}','{self.email}')"
         ##return f"User('{self.email}', '{self.image_file}')"
@@ -31,3 +34,4 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.data_posted}')"
+

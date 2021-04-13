@@ -7,6 +7,8 @@ from nutritionix import Nutritionix
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '982b8f6e08e8cedff2c6deb24a40bbe6'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+
+
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
