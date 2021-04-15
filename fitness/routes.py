@@ -25,7 +25,6 @@ def protected():
 def home():
     return render_template('index copy.html')
 
-
 @app.route("/about")
 def about():
     return render_template('about.html')
@@ -47,6 +46,11 @@ def logout():
     session.pop('id')
     logout_user()
     return redirect(url_for("home"))
+
+@app.route("/user")
+@login_required
+def user():
+    return render_template('user_dashboard.html')
 
 @app.route("/tracker",methods = ["GET", "POST"])
 @login_required
@@ -115,7 +119,7 @@ def signin():
             login_user(user)
             session['id'] = user.id
             session['fname'] = user.fname
-            return redirect(url_for('home'))
+            return render_template('user_dashboard.html')
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('signin.html', form=form)
