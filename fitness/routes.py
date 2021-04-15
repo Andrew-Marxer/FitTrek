@@ -62,6 +62,22 @@ def cardio():
 def strength():
     return render_template('strength.html')
 
+@app.route("/clothes")
+@login_required
+def clothes():
+    return render_template('clothes.html')
+
+@app.route("/equipment")
+@login_required
+def gift():
+    return render_template('equipment.html')
+
+@app.route("/supplement")
+@login_required
+def supplement():
+    return render_template('supplement.html')
+
+
 @app.route("/tracker",methods = ["GET", "POST"])
 @login_required
 
