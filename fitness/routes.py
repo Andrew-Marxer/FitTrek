@@ -52,8 +52,19 @@ def logout():
 def user():
     return render_template('user_dashboard.html')
 
+@app.route("/cardio")
+@login_required
+def cardio():
+    return render_template('cardio.html')
+
+@app.route("/strength")
+@login_required
+def strength():
+    return render_template('strength.html')
+
 @app.route("/tracker",methods = ["GET", "POST"])
 @login_required
+
 def tracker():
 
 
