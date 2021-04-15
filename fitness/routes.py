@@ -40,6 +40,13 @@ def contact():
 def post():
     return render_template('post.html')
 
+@app.route("/logout")
+@login_required
+def logout():
+    session.pop('fname')
+    session.pop('id')
+    logout_user()
+    return redirect(url_for("home"))
 
 @app.route("/tracker",methods = ["GET", "POST"])
 @login_required
@@ -69,7 +76,7 @@ def tracker():
         """
         form = calorieForm()
         if form.validate_on_submit():
-                currentUser = User.query.get(session['anonymous_user_id'])
+                currentUser = User.query.get(session['id'])
                 currentUser.consumed = int(form.consumed.data)
                 currentUser.burned = int(form.burned.data)
                 if(currentUser.consumed - currentUser.burned) < 0 or currentUser.calories < 0:
@@ -106,7 +113,8 @@ def signin():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
-            session['anonymous_user_id'] = user.id
+            session['id'] = user.id
+            session['fname'] = user.fname
             return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
