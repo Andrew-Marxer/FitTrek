@@ -6,39 +6,44 @@ from flask_login import current_user, login_user, current_user, logout_user, log
 from fitness import nix
 import json
 
+#Get the user database for routes
 @app.shell_context_processor
 def make_shell_context():
     return {'db': db, 'User': User}
 
-
+#Default route
 @app.route("/")
 def index():
     db.create_all()
     return render_template('index copy.html')
 
+#Protected route for user id and user consumed
 @app.route("/protected")
 def protected():
     return str(current_user.id)
     return str(current_user.consumed)
 
+#Route for home page
 @app.route("/home")
 def home():
     return render_template('index copy.html')
 
+#Route for about page
 @app.route("/about")
 def about():
     return render_template('about.html')
 
-
+#Route for contact page
 @app.route("/contact")
 def contact():
     return render_template('contact.html')
 
-
+#Route for post page
 @app.route("/post")
 def post():
     return render_template('post.html')
 
+#Route for log out direction which is home page
 @app.route("/logout")
 @login_required
 def logout():
@@ -47,40 +52,47 @@ def logout():
     logout_user()
     return redirect(url_for("home"))
 
+#Route of user after they logged in
 @app.route("/user")
 @login_required
 def user():
     return render_template('user_dashboard.html')
 
+#Route for cardio workout
 @app.route("/cardio")
 @login_required
 def cardio():
     return render_template('cardio.html')
 
+#Route for strength workout
 @app.route("/strength")
 @login_required
 def strength():
     return render_template('strength.html')
 
+#Route for clothes shopping
 @app.route("/clothes")
 @login_required
 def clothes():
     return render_template('clothes.html')
 
+#Route for equipment shopping
 @app.route("/equipment")
 @login_required
 def gift():
     return render_template('equipment.html')
 
+#Route for supplement shopping
 @app.route("/supplement")
 @login_required
 def supplement():
     return render_template('supplement.html')
 
-
+#Route for food nutrition tracking
 @app.route("/tracker",methods = ["GET", "POST"])
 @login_required
 
+#Tracking function form
 def tracker():
 
 
@@ -123,7 +135,8 @@ def tracker():
         return render_template("tracker.html", form = form)
 
     
-
+#Sign up function for user with fields
+#and store them database
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignUpForm()
@@ -138,6 +151,10 @@ def signup():
     return render_template('signup.html', title='Register', form=form)
 
 
+#Sign up function for user with fields
+#and query input information to database
+#if the input match, the user will log in.
+#Otherwise, error message will display
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     form = SignInForm()
