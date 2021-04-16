@@ -35,3 +35,12 @@ class Post(db.Model):
     def __repr__(self):
         return f"Post('{self.title}', '{self.data_posted}')"
 
+class UserData(db.Model):
+    dataId = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
+    consumed = db.Column(db.Integer)
+    burned = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
+
+    user = db.relationship('User', foreign_keys = user_id)
+    

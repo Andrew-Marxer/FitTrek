@@ -108,6 +108,7 @@ def tracker():
         form = calorieForm()
         if form.validate_on_submit():
                 currentUser = User.query.get(session['id'])
+                currentData = userData.query.get(session[''])
                 currentUser.consumed = int(form.consumed.data)
                 currentUser.burned = int(form.burned.data)
                 if(currentUser.consumed - currentUser.burned) < 0 or currentUser.calories < 0:
