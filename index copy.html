@@ -1,0 +1,92 @@
+{%extends "base.html"%}
+{%block title%}
+  <title>Clean Blog - Start Bootstrap Theme</title>
+{%endblock%}
+<body>
+  {%block content%}
+  <!-- Main Content -->
+  
+  <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="post-preview">
+          <a href="post.html">
+            <h2 class="post-title">
+              Healthiest foods that are cheap!
+            </h2>
+            <h3 class="post-subtitle">
+              In this link we show you what healthy foods you can buy without breaking the bank!
+			  <p>
+			  https://www.healthline.com/nutrition/29-cheap-healthy-foods
+            </h3>
+          </a>
+          <p class="post-meta">Posted by
+            <a href="#"> Brianna Elliott</a>
+            on August 20, 2020</p>
+        </div>
+        <hr>
+        <div class="post-preview">
+          <a href="post.html">
+            <h2 class="post-title">
+              10 Tips on how to gain muscle fast and keep it.
+            </h2>
+			<h3 class="post-subtitle">
+			In this article Adam Campbell and Jake Boly teach you about muscle hypertrophy and how it causes you gains.
+          </a>
+          <p class="post-meta">Posted by
+            <a href="#"> ADAM CAMPBELL AND JAKE BOLY</a>
+            on NOV 25, 2020</p>
+        </div>
+        <hr>
+        <div class="post-preview">
+          <a href="post.html">
+            <h2 class="post-title">
+              Science has not yet mastered prophecy
+            </h2>
+            <h3 class="post-subtitle">
+              We predict too much for the next year and yet far too little for the next ten.
+            </h3>
+          </a>
+          <p class="post-meta">Posted by
+            <a href="#">Start Bootstrap</a>
+            on August 24, 2019</p>
+        </div>
+        <hr>
+        <div class="post-preview">
+          <a href="post.html">
+            <h2 class="post-title">
+              Failure is not an option
+            </h2>
+            <h3 class="post-subtitle">
+              Many say exploration is part of our destiny, but it’s actually our duty to future generations.
+            </h3>
+          </a>
+          <p class="post-meta">Posted by
+            <a href="#">Start Bootstrap</a>
+            on July 8, 2019</p>
+        </div>
+        <hr>
+        <!-- Pager -->
+        <div class="clearfix">
+          <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+ 
+{%endblock%}
+</body>
+
+</html>
