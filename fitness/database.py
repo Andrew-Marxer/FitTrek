@@ -20,7 +20,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     post_attribute = db.relationship('Post', backref='author', lazy=True)
     user_data = db.relationship('UserData', backref='user_database', lazy=True)
-
+    user_perk = db.Column(db.Integer, nullable=False)
     consumed = db.Column(db.Integer, nullable=True)
     burned = db.Column(db.Integer, nullable=True)
     calories = db.Column(db.Integer, nullable=True)
@@ -45,7 +45,7 @@ class Post(db.Model):
 
 class UserData(db.Model):
     dataId = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.today())
     consumed = db.Column(db.Integer, nullable=True)
     burned = db.Column(db.Integer, nullable=True)
     cardio = db.Column(db.Integer, nullable=True)

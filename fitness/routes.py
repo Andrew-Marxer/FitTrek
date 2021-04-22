@@ -68,8 +68,8 @@ def logout():
 @app.route("/user")
 @login_required
 def user():
-    total = calculate_workout()
-    return render_template('user_dashboard.html', total=total)
+    total, monthly_calories, perk, achivement = calculate_workout()
+    return render_template('user_dashboard.html', total=total, monthly_calories=monthly_calories, perk=perk, achivement=achivement)
 
 
 # Route for cardio workout
@@ -83,8 +83,8 @@ def cardio():
         db.session.add(user_data)
         db.session.commit()
         return redirect(url_for('cardio'))
-    total = calculate_workout()
-    return render_template('cardio.html', form=form, total=total)
+    total, monthly_calories, perk, achivement = calculate_workout()
+    return render_template('cardio.html', form=form, total=total, monthly_calories=monthly_calories, perk=perk, achivement=achivement)
 
 
 # Route for strength workout
@@ -166,7 +166,7 @@ def signup():
     if form.validate_on_submit():
         hash_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(fname=form.first_name.data, lname=form.last_name.data, email=form.email.data,
-                    password=hash_password, consumed=0, burned=0, calories=0)
+                    password=hash_password, user_perk=250, consumed=0, burned=0, calories=0)
         db.session.add(user)
         db.session.commit()
         flash(f'Thank you for signing up with us', 'success')
@@ -187,6 +187,7 @@ def signin():
             login_user(user)
             session['id'] = user.id
             session['fname'] = user.fname
+            return redirect(url_for('user'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('signin.html', form=form)
@@ -194,13 +195,40 @@ def signin():
 
 @login_required
 def calculate_workout():
+    achivement = 0
+    achivement_max = 1500
     get_all = UserData.query.filter_by(user_id=session['id']).all()
     total_cardio = 0
     total_strength = 0
+    total_cardio_m = 0
+    total_strength_m = 0
+    now = date.today()
+    day = now.strftime("%d")
+    month = now.strftime("%m")
+    monthly_calories = 0
+    print(day)
     for item in get_all:
-        if item.cardio is not None:
+        # Get the daily calories
+        day1 = item.date.strftime("%d")
+        if item.cardio is not None and day == day1:
             total_cardio = total_cardio + item.cardio
-        if item.strength is not None:
+        if item.strength is not None and day == day1:
             total_strength = total_strength + item.strength
+        # Get the monthly calories
+        month1 = item.date.strftime("%m")
+        if item.cardio is not None and month == month1:
+            total_cardio_m = total_cardio_m + item.cardio
+        if item.strength is not None and month == month1:
+            total_strength_m = total_strength_m + item.strength
     total = total_strength + total_cardio
-    return total
+    monthly_calories = total_strength_m + total_cardio_m
+    user = User.query.filter_by(id=session['id']).first()
+    perk = user.user_perk
+    if total > 1500:
+        perk += 50
+    user.user_perk += perk
+    achivement = int((total/achivement_max)*100)
+    return total, monthly_calories, perk, achivement
+
+
+
