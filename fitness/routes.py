@@ -20,7 +20,7 @@ def make_shell_context():
 @app.route("/")
 def index():
     db.create_all()
-    return render_template('index copy.html', total=total)
+    return render_template('index copy.html')
 
 
 # Protected route for user id and user consumed
