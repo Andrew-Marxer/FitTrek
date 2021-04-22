@@ -195,7 +195,6 @@ def signin():
 
 @login_required
 def calculate_workout():
-    achivement = 0
     achivement_max = 1500
     get_all = UserData.query.filter_by(user_id=session['id']).all()
     total_cardio = 0
@@ -205,7 +204,6 @@ def calculate_workout():
     now = date.today()
     day = now.strftime("%d")
     month = now.strftime("%m")
-    monthly_calories = 0
     print(day)
     for item in get_all:
         # Get the daily calories
@@ -224,10 +222,11 @@ def calculate_workout():
     monthly_calories = total_strength_m + total_cardio_m
     user = User.query.filter_by(id=session['id']).first()
     perk = user.user_perk
-    if total > 1500:
+    achivement = int((total/achivement_max)*100)
+    if achivement > 100:
+        achivement = 100
         perk += 50
     user.user_perk += perk
-    achivement = int((total/achivement_max)*100)
     return total, monthly_calories, perk, achivement
 
 
