@@ -1,6 +1,6 @@
 {%extends "base.html"%}
 {%block title%}
-  <title>Clean Blog - Start Bootstrap Theme</title>
+  <title>Home</title>
 {%endblock%}
 <body>
   {%block content%}
@@ -20,7 +20,7 @@
       <div class="col-lg-15 col-md-20 mx-auto">
         {% for post in posts %}
         <div class="post-preview">
-          <a href="https://www.healthline.com/nutrition/29-cheap-healthy-foods"target="_blank" rel="noopener noreferrer">
+          <a href="{{ url_for('mypost', post_id=post.id) }}" rel="noopener noreferrer">
             <h2 class="post-title">
               {{ post.title }}
             </h2>    

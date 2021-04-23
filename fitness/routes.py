@@ -8,6 +8,7 @@ from time import time
 from datetime import date
 import json
 import sys
+import os
 
 
 # Get the user database for routes
@@ -20,7 +21,7 @@ def make_shell_context():
 @app.route("/")
 def index():
     db.create_all()
-    return render_template('index copy.html')
+    return render_template('index.html')
 
 
 # Protected route for user id and user consumed
@@ -35,7 +36,7 @@ def protected():
 def home():
     page = request.args.get('page', 1, type=int)
     posts = Post.query.all()
-    return render_template('index copy.html', posts=posts)
+    return render_template('index.html', posts=posts)
 
 
 # Route for about page
@@ -55,11 +56,12 @@ def contact():
 @login_required
 def mypost():
     posts = Post.query.filter_by(user_id=session['id']).all()
-    return render_template('post.html', posts=posts)
+    return render_template('mypost.html', posts=posts)
 
 
 # Route for post page
 @app.route("/post/<int:post_id>")
+@login_required
 def post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('post.html', title=post.title, post=post)
@@ -90,7 +92,7 @@ def update_post(post_id):
         post.content = form.content.data
         db.session.commit()
         flash('Your post has been updated!', 'success')
-        return redirect(url_for('post', post_id=post.id))
+        return redirect(url_for('mypost', post_id=post.id))
     elif request.method == 'GET':
         form.title.data = post.title
         form.content.data = post.content
