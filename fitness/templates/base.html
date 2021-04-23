@@ -52,7 +52,7 @@
                         <a class="nav-link" href="about">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('post')}}">Sample Post</a>
+                        <a class="nav-link" href="{{url_for('mypost')}}">My Post</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="contact">Contact</a>
@@ -60,6 +60,9 @@
                     {%if current_user.is_authenticated%}
                     <li class="nav-item">
                     <a class="nav-link" href="tracker">Fitness Tracker</a>  
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('new_post') }}">Create Post</a>  
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="logout">Logout</a>  

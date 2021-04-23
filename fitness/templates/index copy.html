@@ -17,66 +17,24 @@
           {% endif %}
         {% endwith %}
     <div class="row">
-      <div class="col-lg-8 col-md-10 mx-auto">
+      <div class="col-lg-15 col-md-20 mx-auto">
+        {% for post in posts %}
         <div class="post-preview">
           <a href="https://www.healthline.com/nutrition/29-cheap-healthy-foods"target="_blank" rel="noopener noreferrer">
             <h2 class="post-title">
-              Healthiest foods that are cheap!
-            </h2>
-            <h3 class="post-subtitle">
-              In this link we show you what healthy foods you can buy without breaking the bank!
-            </h3>
-			
+              {{ post.title }}
+            </h2>    
           </a>
+            <p class="post-subtitle">
+              {{ post.content }}
+            </p>
           <p class="post-meta">Posted by
-            <a href="#"> Brianna Elliott</a>
-            on August 20, 2020</p>
+            <a href="#"> {{ post.author.fname }} {{ post.author.lname }}</a>
+            on {{post.date_posted.strftime("%m-%d-%Y")}}</p>
         </div>
         <hr>
-        <div class="post-preview">
-          <a href="https://www.menshealth.com/fitness/a19534499/10-muscle-building-tips/"target="_blank" rel="noopener noreferrer">
-            <h2 class="post-title">
-              10 Tips on how to gain muscle fast and keep it.
-            </h2>
-			<h3 class="post-subtitle">
-			
-			In this article Adam Campbell and Jake Boly teach you about muscle hypertrophy and how it causes you gains. 
-			
-			<h3/>
-          </a>
-          <p class="post-meta">Posted by
-            <a href="#"> Adam Campbell and Jake Boly</a>
-            on Nov 25, 2020</p>
-        </div>
-        <hr>
-        <div class="post-preview">
-          <a href="https://www.healthline.com/nutrition/best-ways-to-burn-fat"target="_blank" rel="noopener noreferrer">
-            <h2 class="post-title">
-              Click here to learn how to efficiently burn fat
-            </h2>
-            <h3 class="post-subtitle">
-              Here you will learn what you need in order to burn fat fast and keep it off.
-            </h3>
-          </a>
-          <p class="post-meta">Posted by
-            <a href="#">Rachael Link</a>
-            on March 19, 2018</p>
-        </div>
-        <hr>
-        <div class="post-preview">
-          <a href="https://theblissfulmind.com/healthy-mindset/#:~:text=What%20is%20a%20healthy%20mindset,or%20b)%20simply%20accept%20it."target="_blank" rel="noopener noreferrer">
-            <h2 class="post-title">
-              Ways to keep a healthy mindset.
-            </h2>
-            <h3 class="post-subtitle">
-              Just as important as physical fitness is mental health. In this article you will leanr the key to keeping a healthy mind.
-            </h3>
-          </a>
-          <p class="post-meta">Posted by
-            <a href="#">Catherine Beard</a>
-            on July 8, 2019</p>
-        </div>
-        <hr>
+        {% endfor %}
+        
         <!-- Pager -->
         <div class="clearfix">
           <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>

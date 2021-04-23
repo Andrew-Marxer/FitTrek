@@ -1,4 +1,4 @@
-from wtforms import StringField, DecimalField, PasswordField, SubmitField, Form, validators, BooleanField
+from wtforms import StringField, DecimalField, PasswordField, SubmitField, Form, validators, BooleanField, TextAreaField
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from fitness.database import User, Post
@@ -49,3 +49,9 @@ class CalorieWorkoutForm(FlaskForm):
     strength_wo = DecimalField("Strength workout(calories)", validators=[])
     rest = DecimalField("Rest(Calories)", validators=[])
     submit = SubmitField("Submit")
+
+
+class PostStructure(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    content = TextAreaField('Content', validators=[DataRequired()])
+    submit = SubmitField('Post')

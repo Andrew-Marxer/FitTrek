@@ -1,6 +1,6 @@
 from flask import redirect, url_for, render_template, flash, request, session, make_response
 from fitness import app, db, bcrypt
-from fitness.forms import SignInForm, SignUpForm, itemForm, calorieForm, CalorieWorkoutForm
+from fitness.forms import SignInForm, SignUpForm, itemForm, calorieForm, CalorieWorkoutForm, PostStructure
 from fitness.database import User, Post, load_user, UserData
 from flask_login import current_user, login_user, current_user, logout_user, login_required
 from fitness import nix
@@ -33,7 +33,9 @@ def protected():
 # Route for home page
 @app.route("/home")
 def home():
-    return render_template('index copy.html')
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.all()
+    return render_template('index copy.html', posts=posts)
 
 
 # Route for about page
@@ -49,9 +51,63 @@ def contact():
 
 
 # Route for post page
-@app.route("/post")
-def post():
-    return render_template('post.html')
+@app.route("/mypost")
+@login_required
+def mypost():
+    posts = Post.query.filter_by(user_id=session['id']).all()
+    return render_template('post.html', posts=posts)
+
+
+# Route for post page
+@app.route("/post/<int:post_id>")
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post.html', title=post.title, post=post)
+
+
+@app.route("/new_post", methods=['GET', 'POST'])
+@login_required
+def new_post():
+    form = PostStructure()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been created!', 'success')
+        return redirect(url_for('home'))
+    return render_template('new_post.html', title='New Post', form=form, legend='New Post')
+
+
+@app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
+@login_required
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)
+    form = PostStructure()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        flash('Your post has been updated!', 'success')
+        return redirect(url_for('post', post_id=post.id))
+    elif request.method == 'GET':
+        form.title.data = post.title
+        form.content.data = post.content
+    return render_template('create_post.html', title='Update Post',
+                           form=form, legend='Update Post')
+
+
+@app.route("/post/<int:post_id>/delete", methods=['POST'])
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)
+    db.session.delete(post)
+    db.session.commit()
+    flash('Your post has been deleted!', 'success')
+    return redirect(url_for('home'))
 
 
 # Route for log out direction which is home page
@@ -69,7 +125,8 @@ def logout():
 @login_required
 def user():
     total, monthly_calories, perk, achivement = calculate_workout()
-    return render_template('user_dashboard.html', total=total, monthly_calories=monthly_calories, perk=perk, achivement=achivement)
+    return render_template('user_dashboard.html', total=total, monthly_calories=monthly_calories, perk=perk,
+                           achivement=achivement)
 
 
 # Route for cardio workout
@@ -84,35 +141,44 @@ def cardio():
         db.session.commit()
         return redirect(url_for('cardio'))
     total, monthly_calories, perk, achivement = calculate_workout()
-    return render_template('cardio.html', form=form, total=total, monthly_calories=monthly_calories, perk=perk, achivement=achivement)
+    return render_template('cardio.html', form=form, total=total, monthly_calories=monthly_calories, perk=perk,
+                           achivement=achivement)
 
 
 # Route for strength workout
 @app.route("/strength")
 @login_required
 def strength():
-    return render_template('strength.html')
+    total, monthly_calories, perk, achivement = calculate_workout()
+    return render_template('strength.html', total=total, monthly_calories=monthly_calories, perk=perk,
+                           achivement=achivement)
 
 
 # Route for clothes shopping
 @app.route("/clothes")
 @login_required
 def clothes():
-    return render_template('clothes.html')
+    total, monthly_calories, perk, achivement = calculate_workout()
+    return render_template('clothes.html', total=total, monthly_calories=monthly_calories, perk=perk,
+                           achivement=achivement)
 
 
 # Route for equipment shopping
 @app.route("/equipment")
 @login_required
 def gift():
-    return render_template('equipment.html')
+    total, monthly_calories, perk, achivement = calculate_workout()
+    return render_template('equipment.html', total=total, monthly_calories=monthly_calories, perk=perk,
+                           achivement=achivement)
 
 
 # Route for supplement shopping
 @app.route("/supplement")
 @login_required
 def supplement():
-    return render_template('supplement.html')
+    total, monthly_calories, perk, achivement = calculate_workout()
+    return render_template('supplement.html', total=total, monthly_calories=monthly_calories, perk=perk,
+                           achivement=achivement)
 
 
 # Route for food nutrition tracking
@@ -222,12 +288,9 @@ def calculate_workout():
     monthly_calories = total_strength_m + total_cardio_m
     user = User.query.filter_by(id=session['id']).first()
     perk = user.user_perk
-    achivement = int((total/achivement_max)*100)
+    achivement = int((total / achivement_max) * 100)
     if achivement > 100:
         achivement = 100
         perk += 50
     user.user_perk += perk
     return total, monthly_calories, perk, achivement
-
-
-
