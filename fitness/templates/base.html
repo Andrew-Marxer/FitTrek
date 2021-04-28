@@ -51,6 +51,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
                     </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{{ url_for('search') }}">Search</a>
+                    </li>
                     {%if current_user.is_authenticated%}
                     <li class="nav-item">
                         <a class="nav-link" href="{{url_for('mypost')}}">My Post</a>
@@ -78,6 +81,7 @@
                     {%endif%}
                   
                 </ul>
+
             </div>
         </div>
     </nav>
@@ -99,6 +103,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
+              
                 {%block content%}{%endblock%}
             </div>
         </div>

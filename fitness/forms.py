@@ -43,15 +43,19 @@ class calorieForm(FlaskForm):
     burned = DecimalField("Calories burned", validators = [])
     submit = SubmitField("Submit")
 
-
+#Calories form
 class CalorieWorkoutForm(FlaskForm):
     cardio_wo = DecimalField("Cardio workout(calories)", validators = [])
     strength_wo = DecimalField("Strength workout(calories)", validators=[])
     rest = DecimalField("Rest(Calories)", validators=[])
     submit = SubmitField("Submit")
 
-
+#Post form
 class PostStructure(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = TextAreaField('Content', validators=[DataRequired()])
     submit = SubmitField('Post')
+
+class SearchForm(FlaskForm):
+    search = StringField('Search For Post', validators=[DataRequired()])
+    submit = SubmitField("Search")

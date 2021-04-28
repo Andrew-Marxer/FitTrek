@@ -1,6 +1,6 @@
 from flask import redirect, url_for, render_template, flash, request, session, make_response
 from fitness import app, db, bcrypt
-from fitness.forms import SignInForm, SignUpForm, itemForm, calorieForm, CalorieWorkoutForm, PostStructure
+from fitness.forms import SignInForm, SignUpForm, itemForm, calorieForm, CalorieWorkoutForm, PostStructure, SearchForm
 from fitness.database import User, Post, load_user, UserData
 from flask_login import current_user, login_user, current_user, logout_user, login_required
 from fitness import nix
@@ -21,7 +21,8 @@ def make_shell_context():
 @app.route("/")
 def index():
     db.create_all()
-    return render_template('index.html')
+    posts = Post.query.all()
+    return render_template('index.html', posts=posts)
 
 
 # Protected route for user id and user consumed
@@ -34,7 +35,6 @@ def protected():
 # Route for home page
 @app.route("/home")
 def home():
-    page = request.args.get('page', 1, type=int)
     posts = Post.query.all()
     return render_template('index.html', posts=posts)
 
@@ -61,12 +61,12 @@ def mypost():
 
 # Route for post page
 @app.route("/post/<int:post_id>")
-@login_required
 def post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('post.html', title=post.title, post=post)
 
 
+# route for creating new post
 @app.route("/new_post", methods=['GET', 'POST'])
 @login_required
 def new_post():
@@ -80,36 +80,22 @@ def new_post():
     return render_template('new_post.html', title='New Post', form=form, legend='New Post')
 
 
-@app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
-@login_required
-def update_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    if post.author != current_user:
-        abort(403)
-    form = PostStructure()
-    if form.validate_on_submit():
-        post.title = form.title.data
-        post.content = form.content.data
-        db.session.commit()
-        flash('Your post has been updated!', 'success')
-        return redirect(url_for('mypost', post_id=post.id))
-    elif request.method == 'GET':
-        form.title.data = post.title
-        form.content.data = post.content
-    return render_template('create_post.html', title='Update Post',
-                           form=form, legend='Update Post')
+# searching bar
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    form = SearchForm()
+    q = request.args.get('q')
+    if q:
+        search_title = Post.query.filter(Post.title.contains(q))
+        return redirect((url_for('search_results', search_title=search_title)))
+    return render_template('search.html', form=form)
 
 
-@app.route("/post/<int:post_id>/delete", methods=['POST'])
-@login_required
-def delete_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    if post.author != current_user:
-        abort(403)
-    db.session.delete(post)
-    db.session.commit()
-    flash('Your post has been deleted!', 'success')
-    return redirect(url_for('home'))
+@app.route('/search_results/<search_title>')
+def search_results(search_title):
+    print(search_title)
+    results = Post.query.filter(Post.title == search_title).first()
+    return render_template('search_result.html', results=search_title)
 
 
 # Route for log out direction which is home page
